@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Neon Arcade – Chess & Shooting Games</title>
+  <meta name="description" content="Play Chess and Space Shooter games in one stunning Neon Arcade portal. Two epic games, one beautiful UI." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --neon-cyan: #00f5ff;
+      --neon-purple: #bf00ff;
+      --neon-pink: #ff006e;
+      --neon-gold: #ffd60a;
+      --bg-dark: #030712;
+      --bg-card: rgba(255,255,255,0.04);
+      --glass: rgba(255,255,255,0.07);
+      --glow-cyan: 0 0 20px #00f5ff88, 0 0 60px #00f5ff33;
+      --glow-purple: 0 0 20px #bf00ff88, 0 0 60px #bf00ff33;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-dark);
+      color: #e2e8f0;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* STARS BACKGROUND */
+    .stars-bg {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background: radial-gradient(ellipse at 20% 50%, #0f0a2a 0%, #030712 60%);
+    }
+    .stars-bg::before, .stars-bg::after {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        radial-gradient(1px 1px at 10% 20%, #fff 0%, transparent 100%),
+        radial-gradient(1px 1px at 30% 60%, #fff 0%, transparent 100%),
+        radial-gradient(1px 1px at 50% 10%, #fff 0%, transparent 100%),
+        radial-gradient(1px 1px at 70% 80%, #fff 0%, transparent 100%),
+        radial-gradient(1px 1px at 90% 40%, #fff 0%, transparent 100%),
+        radial-gradient(2px 2px at 15% 75%, rgba(0,245,255,0.6) 0%, transparent 100%),
+        radial-gradient(2px 2px at 85% 25%, rgba(191,0,255,0.6) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 45% 90%, #fff 0%, transparent 100%),
+        radial-gradient(1px 1px at 60% 35%, rgba(255,214,10,0.7) 0%, transparent 100%),
+        radial-gradient(1px 1px at 25% 50%, #fff 0%, transparent 100%),
+        radial-gradient(1px 1px at 75% 65%, #fff 0%, transparent 100%),
+        radial-gradient(1px 1px at 40% 15%, rgba(255,0,110,0.5) 0%, transparent 100%);
+      animation: twinkle 4s ease-in-out infinite alternate;
+    }
+    .stars-bg::after {
+      background-image:
+        radial-gradient(1px 1px at 5% 85%, #fff 0%, transparent 100%),
+        radial-gradient(1px 1px at 35% 25%, rgba(0,245,255,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 55% 55%, #fff 0%, transparent 100%),
+        radial-gradient(2px 2px at 80% 10%, rgba(191,0,255,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 95% 70%, rgba(255,214,10,0.6) 0%, transparent 100%),
+        radial-gradient(1px 1px at 20% 40%, #fff 0%, transparent 100%),
+        radial-gradient(1px 1px at 65% 95%, rgba(255,0,110,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 48% 48%, #fff 0%, transparent 100%);
+      animation-duration: 6s;
+      animation-direction: alternate-reverse;
+    }
+    @keyframes twinkle {
+      0% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+
+    /* MAIN WRAPPER */
+    .wrapper { position: relative; z-index: 1; }
+
+    /* HEADER / NAV */
+    header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.2rem 3rem;
+      background: rgba(3,7,18,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(0,245,255,0.15);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .logo {
+      font-family: 'Orbitron', monospace;
+      font-size: 1.5rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 2px;
+    }
+    nav a {
+      color: #94a3b8;
+      text-decoration: none;
+      margin-left: 2rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: color 0.3s;
+    }
+    nav a:hover { color: var(--neon-cyan); }
+
+    /* HERO */
+    .hero {
+      text-align: center;
+      padding: 6rem 2rem 4rem;
+    }
+    .hero-badge {
+      display: inline-block;
+      padding: 0.4rem 1.2rem;
+      border-radius: 999px;
+      border: 1px solid rgba(0,245,255,0.4);
+      color: var(--neon-cyan);
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      font-family: 'Orbitron', monospace;
+      background: rgba(0,245,255,0.05);
+      animation: pulseGlow 2.5s ease-in-out infinite;
+    }
+    @keyframes pulseGlow {
+      0%,100% { box-shadow: 0 0 8px rgba(0,245,255,0.3); }
+      50% { box-shadow: 0 0 20px rgba(0,245,255,0.7), 0 0 40px rgba(0,245,255,0.3); }
+    }
+    .hero h1 {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 1.2rem;
+      background: linear-gradient(135deg, #fff 0%, var(--neon-cyan) 50%, var(--neon-purple) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      font-size: 1.15rem;
+      color: #94a3b8;
+      max-width: 520px;
+      margin: 0 auto 3rem;
+      line-height: 1.7;
+    }
+
+    /* GAME CARDS */
+    .games-section {
+      padding: 2rem 2rem 6rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .section-title {
+      font-family: 'Orbitron', monospace;
+      font-size: 1.2rem;
+      color: var(--neon-cyan);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+    .game-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 24px;
+      padding: 2.5rem 2rem;
+      cursor: pointer;
+      transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(8px);
+    }
+    .game-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 24px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .game-card.chess::before {
+      background: radial-gradient(circle at 50% 0%, rgba(0,245,255,0.12), transparent 60%);
+    }
+    .game-card.shooter::before {
+      background: radial-gradient(circle at 50% 0%, rgba(255,0,110,0.12), transparent 60%);
+    }
+    .game-card:hover { transform: translateY(-8px); }
+    .game-card.chess:hover {
+      border-color: rgba(0,245,255,0.5);
+      box-shadow: 0 20px 60px rgba(0,245,255,0.15), 0 0 0 1px rgba(0,245,255,0.2);
+    }
+    .game-card.chess:hover::before { opacity: 1; }
+    .game-card.shooter:hover {
+      border-color: rgba(255,0,110,0.5);
+      box-shadow: 0 20px 60px rgba(255,0,110,0.15), 0 0 0 1px rgba(255,0,110,0.2);
+    }
+    .game-card.shooter:hover::before { opacity: 1; }
+
+    .card-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      display: block;
+      filter: drop-shadow(0 0 12px currentColor);
+    }
+    .card-tag {
+      display: inline-block;
+      padding: 0.25rem 0.8rem;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      font-family: 'Orbitron', monospace;
+    }
+    .chess .card-tag { background: rgba(0,245,255,0.15); color: var(--neon-cyan); }
+    .shooter .card-tag { background: rgba(255,0,110,0.15); color: var(--neon-pink); }
+
+    .card-title {
+      font-family: 'Orbitron', monospace;
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+    .chess .card-title { color: #e0f7ff; }
+    .shooter .card-title { color: #ffe0f0; }
+
+    .card-desc {
+      color: #64748b;
+      font-size: 0.92rem;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+    .card-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: opacity 0.2s, transform 0.2s;
+      font-family: 'Orbitron', monospace;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .chess .card-btn {
+      background: linear-gradient(135deg, #00c8ff, #0070ff);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(0,245,255,0.3);
+    }
+    .shooter .card-btn {
+      background: linear-gradient(135deg, #ff006e, #bf00ff);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(255,0,110,0.3);
+    }
+    .card-btn:hover { opacity: 0.88; transform: scale(1.04); }
+
+    .card-features {
+      list-style: none;
+      margin-top: 1.2rem;
+      display: flex; flex-direction: column; gap: 0.4rem;
+    }
+    .card-features li {
+      font-size: 0.82rem;
+      color: #475569;
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .card-features li::before { content: '✦'; font-size: 0.6rem; }
+    .chess .card-features li::before { color: var(--neon-cyan); }
+    .shooter .card-features li::before { color: var(--neon-pink); }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: #334155;
+      font-size: 0.8rem;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    /* FLOATING PARTICLES */
+    .particles {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    }
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      animation: float linear infinite;
+      opacity: 0;
+    }
+    @keyframes float {
+      0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 0.6; }
+      100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+<div class="stars-bg"></div>
+<div class="particles" id="particles"></div>
+
+<div class="wrapper">
+  <header>
+    <div class="logo">⚡ NEON ARCADE</div>
+    <nav>
+      <a href="chess.html">Chess</a>
+      <a href="shooter.html">Shooter</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="hero-badge">🎮 Two Epic Games</div>
+    <h1>NEON ARCADE</h1>
+    <p>Step into the ultimate gaming portal — master the board in Chess or blast through waves of enemies in Space Shooter.</p>
+  </section>
+
+  <section class="games-section">
+    <div class="section-title">▸ Choose Your Game</div>
+    <div class="games-grid">
+
+      <a href="chess.html" class="game-card chess">
+        <span class="card-icon">♟️</span>
+        <span class="card-tag">Strategy</span>
+        <h2 class="card-title">Chess</h2>
+        <p class="card-desc">Full two-player chess with move validation, check/checkmate detection, and a stunning neon board. Test your mind against a friend or the AI.</p>
+        <ul class="card-features">
+          <li>Full legal move validation</li>
+          <li>Check &amp; checkmate detection</li>
+          <li>Two-player local mode</li>
+          <li>Neon-themed board</li>
+        </ul>
+        <span class="card-btn">Play Now →</span>
+      </a>
+
+      <a href="shooter.html" class="game-card shooter">
+        <span class="card-icon">🚀</span>
+        <span class="card-tag">Action</span>
+        <h2 class="card-title">Space Shooter</h2>
+        <p class="card-desc">An adrenaline-pumping space shooter with waves of enemy ships, power-ups, explosions and a relentless boss fight. How long can you survive?</p>
+        <ul class="card-features">
+          <li>Progressive enemy waves</li>
+          <li>Explosive particle effects</li>
+          <li>Power-ups &amp; shields</li>
+          <li>Epic boss battles</li>
+        </ul>
+        <span class="card-btn">Play Now →</span>
+      </a>
+
+    </div>
+  </section>
+
+  <footer>
+    &copy; 2026 Neon Arcade &mdash; Built for Epic Gamers
+  </footer>
+</div>
+
+<script>
+  // Generate floating particles
+  const container = document.getElementById('particles');
+  const colors = ['#00f5ff','#bf00ff','#ff006e','#ffd60a','#00ff88'];
+  for (let i = 0; i < 40; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = Math.random() * 4 + 1;
+    p.style.cssText = `
+      width:${size}px;height:${size}px;
+      left:${Math.random()*100}%;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      animation-duration:${Math.random()*15+10}s;
+      animation-delay:${Math.random()*-20}s;
+      filter: blur(${size > 3 ? 1 : 0}px);
+    `;
+    container.appendChild(p);
+  }
+</script>
+</body>
+</html>
